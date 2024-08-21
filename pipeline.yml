@@ -1,0 +1,81 @@
+resources:
+  - name: my-repo
+    type: git
+    source:
+      uri: https://github.com/Viren0602/selenium.git
+      branch: main
+ 
+jobs:
+  - name: run-selenium-script
+    plan:
+      - get: my-repo
+        trigger: true
+      - task: scrap-data
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: python
+              tag: "3.9"
+          inputs:
+            - name: my-repo
+          run:
+            path: /bin/bash
+            args:
+              - -c
+              - |
+                # Navigate to the repository directory
+                cd my-repo
+                # apt install -y gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 libfontconfig1 libgdk-pixbuf2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libxss1 fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils
+                # Install dependencies
+                apt-get update && apt-get install -y wget unzip
+                echo "Dependencies installed:"
+                ls -l
+                apt install -y gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 libfontconfig1 libgdk-pixbuf2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libxss1 fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils
+                # Install Google Chrome
+                wget https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.119/linux64/chrome-linux64.zip
+                echo "Downloaded Google Chrome package:"
+ 
+               
+                # unzip chrome-linux64.zip -d /opt/google
+                # echo "unzipping google chrome"
+                # ls -l /opt/google/
+                # ls -l /opt/google/chrome-linux64
+                # ln -s /opt/google/chrome*/google-chrome /usr/local/bin/google-chrome
+                # echo "Google Chrome installed:"
+                # google-chrome --version
+                # # ls /usr/bin
+                # echo "osdjdsbdjbvsvbs"
+                # ls -l /usr/local/bin/chromedriver-linux64
+ 
+ 
+ 
+                apt-get update && apt-get install -y wget unzip curl libxi6 libgconf-2-4 libnss3 libgbm-dev xdg-utils
+                wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+                sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+                apt-get update && apt-get install -y google-chrome-stable
+ 
+ 
+ 
+ 
+                # Install ChromeDriver
+                wget https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.119/linux64/chromedriver-linux64.zip
+                echo "Downloaded ChromeDriver package:"
+                ls -l chromedriver-linux64.zip
+                unzip chromedriver-linux64.zip
+                echo "Unzipped files:"
+                ls -l
+                mv chromedriver-linux64 /usr/local/bin/
+                chmod +x /usr/local/bin/chromedriver-linux64
+                echo "ChromeDriver installed:"
+                ls -l /usr/local/bin/chromedriver-linux64
+               
+ 
+                # Install Python packages
+                pip install selenium
+                echo "Python packages installed:"
+                pip list
+ 
+                # Run the Selenium script
+                python selenium2.py
